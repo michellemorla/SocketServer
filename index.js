@@ -4,19 +4,22 @@ let io = require('socket.io')(server);
  
 io.on('connection', (socket) => {
 
-console.log(socket);
-  socket.on('disconnect', function(){
-    io.emit('users-changed', {user: socket.username, event: 'left'});   
-  });
- 
-  socket.on('set-name', (name) => {
-    socket.username = name;
-    io.emit('users-changed', {user: name, event: 'joined'});    
-  });
+socket.emit('command-to-device',{msg: '*AA$PR1#'});
   
-  socket.on('send-message', (message) => {
-    io.emit('message', {msg: message.text, user: socket.username, createdAt: new Date()});    
+console.log(socket);
+  
+  socket.on('send-message', (message) => {  
+    io.emit('command-to-device', {msg: '*AA$PR1#', event: 'position-request'}); 
+    console.log('------------');
+    console.log(message);
+    console.log('------------');
   });
+
+  socket.on('command-from-device', (message) =>{
+    console.log('------------');
+    console.log(message);
+    console.log('------------');
+  })
 });
  
 var port = process.env.PORT || 3001;
